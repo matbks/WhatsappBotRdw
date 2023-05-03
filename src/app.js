@@ -4,12 +4,27 @@ const qrcode = require("qrcode-terminal");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const dotenv = require("dotenv");
+const path = require("path");
+const fs = require("fs");
+
+dotenv.config();
+
+const SESSION_FILE_PATH = path.join(__dirname, "tokens", "session.json");
+
+let sessionData;
+if (fs.existsSync(SESSION_FILE_PATH)) {
+  sessionData = require(SESSION_FILE_PATH);
+} else {
+  sessionData = {};
+}
 
 const client = new Client({
   puppeteer: {
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    authStrategy: new LocalAuth(),
   },
+  session: sessionData,
+  authStrategy: new LocalAuth(),
 });
 
 client.on("qr", (qr) => {
@@ -18,12 +33,20 @@ client.on("qr", (qr) => {
 
 client.on("ready", () => {
   console.log("Client is ready!");
+
+  if (client.session) {
+    fs.writeFile(SESSION_FILE_PATH, JSON.stringify(client.session), (err) => {
+      if (err) {
+        console.error("Error saving session data:", err);
+      }
+    });
+  }
 });
 
 client.on("message", (message) => {
-  //   if(message.body = 'Oi'){
-  //     message.reply(`Please stop bothering me`);
-  //   }
+  // if (message.body === "Oi") {
+  //   message.reply(`Please stop bothering me`);
+  // }
 });
 
 client.initialize();
@@ -32,7 +55,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-
   res.header(
     "Access-Control-Allow-Header",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
@@ -48,7 +70,7 @@ app.use((req, res, next) => {
 });
 
 app.post("/register", (req, res) => {
-    console.log(req.body.number)
+  console.log(req.body.number);
   var correctNumber = validNumber(req.body.number);
   console.log(correctNumber);
   if (correctNumber) {
@@ -87,11 +109,11 @@ function today() {
 function now() {
   var date = new Date();
   var options = { timeZone: "America/Sao_Paulo", hour12: false };
-  var time = date.toLocaleString("en-US", options).split(" ")[1];
+  var time = date.toLocaleString("pt-BR", options).split(" ")[1];
   return time;
 }
 
-function validNumber(phoneNumber) { 
+function validNumber(phoneNumber) {
   phoneNumber =
     phone
       .parsePhoneNumber(phoneNumber, "BR")
@@ -101,7 +123,7 @@ function validNumber(phoneNumber) {
 
   phoneNumber = phoneNumber.includes("55") ? phoneNumber : `55${phoneNumber}`;
 
-  if (!phoneNumber.length < 13) { 
+  if (!phoneNumber.length < 13) {
     phoneNumber = phoneNumber.slice(0, 4) + phoneNumber.slice(5);
   }
 
