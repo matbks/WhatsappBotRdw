@@ -1,118 +1,144 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.post('/register', async (req, res) => {
-  const phoneNumber = validNumber(req.body.number);
-
-  if (phoneNumber) {
-    try {
-      const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
-        recipient_type: 'individual',
-        to: phoneNumber,
-        type: 'text',
-        text: {
-          body: 'Please select an option:\n1. Create Material\n2. Other option',
-        },
-      });
-
-      res.status(200).send('Message sent!');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      res.status(500).send('Error sending message');
+app.post('/webhook', (req, res) => {
+  const messages = req.body.messages;
+  
+  messages.forEach(message => {
+    if (!message.fromMe) {
+      console.log('Received message from ' + message.author);
+      console.log('Message content: ' + message.body.text.body);
+      // Here you can add your logic to handle incoming messages
     }
-  } else {
-    console.log('Falha no registro');
-    res.status(400).send('Invalid phone number');
-  }
-});
+  });
 
-app.post('/webhook', async (req, res) => {
-  const message = req.body.messages[0];
-
-  if (message.fromMe) {
-    // Ignore messages sent by the bot
-    return res.status(200).send('Message received!');
-  }
-
-  if (message.body === '1') {
-    // The user selected "Create Material", so ask for the material details
-    const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
-      recipient_type: 'individual',
-      to: message.from,
-      type: 'text',
-      text: {
-        body: 'Please enter the material number, description, and type, separated by commas.',
-      },
-    });
-  } else if (message.body === '2') {
-    // Handle the other option
-  } else {
-    // The user's response didn't match any of the options, so ask them to try again
-    const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
-      recipient_type: 'individual',
-      to: message.from,
-      type: 'text',
-      text: {
-        body: 'Invalid option. Please try again.',
-      },
-    });
-  }
-
-  res.status(200).send('Message received!');
+  res.status(200).send('Messages received!');
 });
 
 app.listen(3002, () => {
   console.log('WhatsApp Bot is listening to port 3002');
 });
 
-function validNumber(phoneNumber) {
-  // Your phone number validation logic here
-}
 
-app.post('/webhook', async (req, res) => {
-  const message = req.body.messages[0];
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const axios = require('axios');
+// const app = express();
 
-  if (message.fromMe) {
-    // Ignore messages sent by the bot
-    return res.status(200).send('Message received!');
-  }
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 
-  if (message.body.includes(',')) {
-    // The user entered the material details, so parse the details and call the SAP service
-    const [materialNumber, description, type] = message.body.split(',');
+// app.post('/register', async (req, res) => {
+//   const phoneNumber = validNumber(req.body.number);
 
-    // Call the SAP service with the material details
-    // For example:
-    // const response = await callSapService(materialNumber, description, type);
+//   if (phoneNumber) {
+//     try {
+//       const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
+//         recipient_type: 'individual',
+//         to: phoneNumber,
+//         type: 'text',
+//         text: {
+//           body: 'Please select an option:\n1. Create Material\n2. Other option',
+//         },
+//       });
 
-    // Then send a message to the user confirming that the material was created
-    const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
-      recipient_type: 'individual',
-      to: message.from,
-      type: 'text',
-      text: {
-        body: 'Material created successfully!',
-      },
-    });
-  } else {
-    // The user's response didn't match the expected format, so ask them to try again
-    const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
-      recipient_type: 'individual',
-      to: message.from,
-      type: 'text',
-      text: {
-        body: 'Invalid format. Please enter the material number, description, and type, separated by commas.',
-      },
-    });
-  }
+//       res.status(200).send('Message sent!');
+//     } catch (error) {
+//       console.error('Error sending message:', error);
+//       res.status(500).send('Error sending message');
+//     }
+//   } else {
+//     console.log('Falha no registro');
+//     res.status(400).send('Invalid phone number');
+//   }
+// });
 
-  res.status(200).send('Message received!');
-});
+// app.post('/webhook', async (req, res) => {
+//   const message = req.body.messages[0];
+
+//   if (message.fromMe) {
+//     // Ignore messages sent by the bot
+//     return res.status(200).send('Message received!');
+//   }
+
+//   if (message.body === '1') {
+//     // The user selected "Create Material", so ask for the material details
+//     const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
+//       recipient_type: 'individual',
+//       to: message.from,
+//       type: 'text',
+//       text: {
+//         body: 'Please enter the material number, description, and type, separated by commas.',
+//       },
+//     });
+//   } else if (message.body === '2') {
+//     // Handle the other option
+//   } else {
+//     // The user's response didn't match any of the options, so ask them to try again
+//     const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
+//       recipient_type: 'individual',
+//       to: message.from,
+//       type: 'text',
+//       text: {
+//         body: 'Invalid option. Please try again.',
+//       },
+//     });
+//   }
+
+//   res.status(200).send('Message received!');
+// });
+
+// app.listen(3002, () => {
+//   console.log('WhatsApp Bot is listening to port 3002');
+// });
+
+// function validNumber(phoneNumber) {
+//   // Your phone number validation logic here
+// }
+
+// app.post('/webhook', async (req, res) => {
+//   const message = req.body.messages[0];
+
+//   if (message.fromMe) {
+//     // Ignore messages sent by the bot
+//     return res.status(200).send('Message received!');
+//   }
+
+//   if (message.body.includes(',')) {
+//     // The user entered the material details, so parse the details and call the SAP service
+//     const [materialNumber, description, type] = message.body.split(',');
+
+//     // Call the SAP service with the material details
+//     // For example:
+//     // const response = await callSapService(materialNumber, description, type);
+
+//     // Then send a message to the user confirming that the material was created
+//     const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
+//       recipient_type: 'individual',
+//       to: message.from,
+//       type: 'text',
+//       text: {
+//         body: 'Material created successfully!',
+//       },
+//     });
+//   } else {
+//     // The user's response didn't match the expected format, so ask them to try again
+//     const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
+//       recipient_type: 'individual',
+//       to: message.from,
+//       type: 'text',
+//       text: {
+//         body: 'Invalid format. Please enter the material number, description, and type, separated by commas.',
+//       },
+//     });
+//   }
+
+//   res.status(200).send('Message received!');
+// });
 
 
 
