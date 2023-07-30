@@ -1,13 +1,11 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const crypto = require('crypto');
+const axios = require('axios');
 const app = express();
 
-app.use(bodyParser.json({
-  verify: (req, res, buf) => {
-    req.rawBody = buf;
-  }
-}));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get('/webhook', (req, res) => {
   if (req.query['hub.mode'] === 'subscribe' &&
@@ -20,30 +18,82 @@ app.get('/webhook', (req, res) => {
   }  
 });
 
-app.post('/webhook', (req, res) => {
-  var data = req.body;
-  if (data.object === 'page') {
-    data.entry.forEach((entry) => {
-      var pageID = entry.id;
-      var timeOfEvent = entry.time;
-      entry.messaging.forEach((event) => {
-        if (event.message) {
-          receivedMessage(event);
-        } else {
-          console.log('Webhook received unknown event: ', event);
-        }
-      });
-    });
-    res.sendStatus(200);
+app.post('/webhook', async (req, res) => {
+  const message = req.body.messages[0];
+
+  if (message.fromMe) {
+    // Ignore messages sent by the bot
+    return res.status(200).send('Message received!');
   }
+
+  // Your logic here
+  // For example, if the message body is '1', send a response
+  if (message.body === '1') {
+    const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
+      recipient_type: 'individual',
+      to: message.from,
+      type: 'text',
+      text: {
+        body: 'You selected option 1.',
+      },
+    });
+  }
+
+  res.status(200).send('Message received!');
 });
 
-function receivedMessage(event) {
-  // Handle your message here
-  console.log('Message data: ', event.message);
-}
+app.listen(3002, () => {
+  console.log('WhatsApp Bot is listening to port 3002');
+});
 
-app.listen(3002, () => console.log('Webhook server is listening, port 3002'));
+
+// webhook meta
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const crypto = require('crypto');
+// const app = express();
+
+// app.use(bodyParser.json({
+//   verify: (req, res, buf) => {
+//     req.rawBody = buf;
+//   }
+// }));
+
+// app.get('/webhook', (req, res) => {
+//   if (req.query['hub.mode'] === 'subscribe' &&
+//       req.query['hub.verify_token'] === 'RdwMessage') {
+//     console.log('Webhook validated');
+//     res.status(200).send(req.query['hub.challenge']);
+//   } else {
+//     console.error('Failed validation. Make sure the validation tokens match.');
+//     res.sendStatus(403);          
+//   }  
+// });
+
+// app.post('/webhook', (req, res) => {
+//   var data = req.body;
+//   if (data.object === 'page') {
+//     data.entry.forEach((entry) => {
+//       var pageID = entry.id;
+//       var timeOfEvent = entry.time;
+//       entry.messaging.forEach((event) => {
+//         if (event.message) {
+//           receivedMessage(event);
+//         } else {
+//           console.log('Webhook received unknown event: ', event);
+//         }
+//       });
+//     });
+//     res.sendStatus(200);
+//   }
+// });
+
+// function receivedMessage(event) {
+//   // Handle your message here
+//   console.log('Message data: ', event.message);
+// }
+
+// app.listen(3002, () => console.log('Webhook server is listening, port 3002'));
 
 
 // const express = require('express');
