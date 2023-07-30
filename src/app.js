@@ -1,27 +1,49 @@
-const express = require("express"),
-  bodyParser = require("body-parser"),
-  { urlencoded, json } = require("body-parser"),
-  app = express().use(bodyParser.json());
-      
+const express = require('express');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
+const app = express();
 
-// Verify that the callback came from Facebook.
-function verifyRequestSignature(req, res, buf) {
-  var signature = req.headers["x-hub-signature-256"];
-
-  if (!signature) {
-    console.warn(`Couldn't find "x-hub-signature-256" in headers.`);
-  } else {
-    var elements = signature.split("=");
-    var signatureHash = elements[1];
-    var expectedHash = crypto
-      .createHmac("sha256", config.appSecret)
-      .update(buf)
-      .digest("hex");
-    if (signatureHash != expectedHash) {
-      throw new Error("Couldn't validate the request signature.");
-    }
+app.use(bodyParser.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf;
   }
+}));
+
+app.get('/webhook', (req, res) => {
+  if (req.query['hub.mode'] === 'subscribe' &&
+      req.query['hub.verify_token'] === 'RdwMessage') {
+    console.log('Webhook validated');
+    res.status(200).send(req.query['hub.challenge']);
+  } else {
+    console.error('Failed validation. Make sure the validation tokens match.');
+    res.sendStatus(403);          
+  }  
+});
+
+app.post('/webhook', (req, res) => {
+  var data = req.body;
+  if (data.object === 'page') {
+    data.entry.forEach((entry) => {
+      var pageID = entry.id;
+      var timeOfEvent = entry.time;
+      entry.messaging.forEach((event) => {
+        if (event.message) {
+          receivedMessage(event);
+        } else {
+          console.log('Webhook received unknown event: ', event);
+        }
+      });
+    });
+    res.sendStatus(200);
+  }
+});
+
+function receivedMessage(event) {
+  // Handle your message here
+  console.log('Message data: ', event.message);
 }
+
+app.listen(1337, () => console.log('Webhook server is listening, port 1337'));
 
 
 // const express = require('express');
