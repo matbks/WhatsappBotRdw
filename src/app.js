@@ -43,7 +43,7 @@ function receivedMessage(event) {
   console.log('Message data: ', event.message);
 }
 
-app.listen(1337, () => console.log('Webhook server is listening, port 1337'));
+app.listen(3002, () => console.log('Webhook server is listening, port 3002'));
 
 
 // const express = require('express');
