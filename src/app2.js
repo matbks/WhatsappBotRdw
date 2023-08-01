@@ -19,28 +19,36 @@ cXEhp1DM6whTJcup/JgvbAvMdtQajSxTQOxNvmSMDO9iUpXirQQN3wJ/wzTsLFRk
 Bii1qJlza6nlTOipV0RNcxZlVGgXiIY8taBHz5ljbN0iKzQgPgHMvV60DiImuz5Y
 Z7vK
 -----END CERTIFICATE-----`;
-// Your SAML configuration options (issuer, callbackUrl, entryPoint, cert, etc.)
-const samlConfig = {
-  // Replace these values with your actual SAML configuration
-  entryPoint: 'http://localhost/login/callback',
-  callbackUrl: 'http://localhost/saml/callback',
-  issuer: 'passport-saml',
-  cert: primaryCert,
-  // Add other SAML configuration options here if needed
-};
 
-// Create a new SamlStrategy
-const samlStrategy = new SamlStrategy(samlConfig, (profile, done) => {
-  // This function will be called after successful authentication.
-  // You can perform any necessary actions here, e.g., save the user profile to a database.
-  // For now, let's just return the user profile.
-  return done(null, profile);
-});
+const samlStrategy = new SamlStrategy(
+  {
+    path: '/login/callback',
+    entryPoint: 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT',
+    issuer: 'passport-saml',
+    cert: primaryCert, // Use the primary certificate here
+  },
+  function (profile, done) {
+    // In this function, you can access the user profile information contained in the SAML assertion.
+    // You would typically use this to look up the user in your database and create a user session.
+    // For now, we'll just call done immediately with the user profile.
+    return done(null, profile);
+  }
+);
 
-// Initialize passport and use the SamlStrategy
 passport.use(samlStrategy);
 
 const app = express();
+
+// Initialize passport and use the SamlStrategy
+app.use(passport.initialize());
+
+// Use the `samlStrategy.generateServiceProviderMetadata()` function to generate the SP metadata.
+const serviceProviderMetadata = samlStrategy.generateServiceProviderMetadata();
+
+console.log('ServiceProviderMetadata:');
+console.log(serviceProviderMetadata);
+
+// You can use the `serviceProviderMetadata` to configure your SAML identity provider (IdP).
 
 // Endpoint to initiate SAML authentication
 app.get('/login', passport.authenticate('saml', { session: false }), (req, res) => {
@@ -50,44 +58,44 @@ app.get('/login', passport.authenticate('saml', { session: false }), (req, res) 
 });
 
 // Callback endpoint to handle SAML response
-app.post('/saml/callback', passport.authenticate('saml', { session: false }), (req, res) => {
+app.post('/login/callback', passport.authenticate('saml', { session: false }), (req, res) => {
   // This route will be called after successful SAML authentication.
-  // You can access the authenticated user's profile in req.user.
-  // Add any additional logic here if needed.
-  res.send('SAML Authentication Successful!'); // You can customize the response message here.
-});
+  // You can access the SAML response in req.body.SAMLResponse.
 
-// API endpoint to query the service with proper authentication
-app.get('/queryService', passport.authenticate('saml', { session: false }), async (req, res) => {
-  try {
-    // API endpoint of the service you want to query
-    const apiUrl = 'http://vsapdev.tipler.com.br:8000/sap/opu/odata/sap/ZTESTE_SRV/ZiItemBatchSet';
+  // Extract the SAML assertion from the SAML response
+  const samlAssertion = req.body.SAMLResponse;
 
-    // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with the actual username and password for authentication
-    const username = 'REDWARE_ABAP';
-    const password = 'Redware@2024';
+  // Use the SAML assertion to authenticate your API request
+  // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with the actual username and password for authentication
+  const username = 'ABAP_REDWARE';
+  const password = 'Redware@2024';
 
-    // Create a base64-encoded string of the username and password for Basic Authentication
-    const authString = Buffer.from(`${username}:${password}`).toString('base64');
+  // Create a base64-encoded string of the username and password for Basic Authentication
+  const authString = Buffer.from(`${username}:${password}`).toString('base64');
 
-    // Make the authenticated API request using axios
-    const response = await axios.get(apiUrl, {
+  // API endpoint of the service you want to query
+  const apiUrl = 'https://vsapdev.tipler.com.br:8000/sap/opu/odata/sap/ZTESTE_SRV/?$format=xml';
+
+  // Make the authenticated API request using axios with the SAML assertion in the Authorization header
+  axios
+    .get(apiUrl, {
       headers: {
-        Authorization: `Basic ${authString}`,
+        Authorization: `Bearer ${samlAssertion}`,
       },
+    })
+    .then((response) => {
+      // Handle the response from the service
+      const data = response.data;
+      res.json(data);
+    })
+    .catch((error) => {
+      console.error('Error querying the service:', error);
+      res.status(500).send('Error querying the service');
     });
-
-    // Extract and return the data from the response
-    const data = response.data;
-    res.json(data);
-  } catch (error) {
-    console.error('Error querying the service:', error);
-    res.status(500).send('Error querying the service');
-  }
 });
 
 // Start the server
-const port = 3000;
+const port = 3002;
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });
