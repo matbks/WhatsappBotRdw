@@ -12,7 +12,7 @@ const oauthConfig = {
   grant_type: 'authorization_code',
   username: 'REDWARE_ABAP',
   password: 'Redware@2024',
-  redirect_uri: 'http://localhost:3003/callback' // Replace with your redirect URI
+  redirect_uri: 'http://localhost:3002/callback' // Replace with your redirect URI
 };
 
 app.get('/callback', async (req, res) => {
@@ -49,7 +49,7 @@ app.get('/callback', async (req, res) => {
   }
 });
 
-const port = 3003;
+const port = 3002;
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });
