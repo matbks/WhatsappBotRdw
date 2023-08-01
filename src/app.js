@@ -87,7 +87,7 @@ app.get('/queryService', passport.authenticate('saml', { session: false }), asyn
 });
 
 // Start the server
-const port = 3000;
+const port = 3002;
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });
