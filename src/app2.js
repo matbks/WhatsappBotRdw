@@ -5,14 +5,12 @@ const qs = require('querystring');
 const app = express();
 
 const oauthConfig = {
-  tokenUrl: 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/token', // Replace with the correct URL
-  authorizeUrl: 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/authorize', // Replace with the correct URL
+  tokenUrl: 'https://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/token', // Replace with the correct URL
+  authorizeUrl: 'https://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/authorize', // Replace with the correct URL
   client_id: 'ODATA_RED', // Replace with your client id
-  client_secret: '', // Replace with your client secret
-  grant_type: 'authorization_code',
-  username: 'REDWARE_ABAP',
-  password: 'Redware@2024',
-  redirect_uri: 'http://localhost:3002/callback' // Replace with your redirect URI
+  redirect_uri: 'https://bot.redware.io/callback', // Replace with your redirect URI
+  username: 'REDWARE_ABAP', // Replace with your SAP username
+  password: 'Redware@2024' // Replace with your SAP password
 };
 
 app.get('/callback', async (req, res) => {
@@ -22,30 +20,37 @@ app.get('/callback', async (req, res) => {
     const tokenResponse = await axios.post(oauthConfig.tokenUrl, qs.stringify({
       ...oauthConfig,
       code,
+      grant_type: 'authorization_code',
     }), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      auth: {
+        username: oauthConfig.username,
+        password: oauthConfig.password
       }
     });
 
+    console.log('Token response:', tokenResponse.data); // Log the token response
+
     const accessToken = tokenResponse.data.access_token;
 
-    // API endpoint of the service you want to query
-    const apiUrl = 'http://vsapdev.tipler.com.br:8000/sap/opu/odata/sap/ZTESTE_SRV/ZiItemBatchSet';
+    // You now have the access token and can use it to make authenticated requests
+    // to the SAP service. For example:
 
-    // Make the authenticated API request using axios
-    const response = await axios.get(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    // const response = await axios.get('https://vsapdev.tipler.com.br:8000/sap/opu/odata/sap/ZTESTE_SRV/ZiItemBatchSet', {
+    //   headers: {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    // });
 
-    // Extract and return the data from the response
-    const data = response.data;
-    res.json(data);
+    // const data = response.data;
+    // res.json(data);
+
+    res.json({ accessToken });
   } catch (error) {
-    console.error('Error querying the service:', error);
-    res.status(500).send('Error querying the service');
+    console.error('Error getting access token:', error);
+    res.status(500).send('Error getting access token');
   }
 });
 
@@ -53,55 +58,3 @@ const port = 3002;
 app.listen(port, () => {
   console.log(`Server started on http://localhost:${port}`);
 });
-
-
-// const express = require('express');
-// const axios = require('axios');
-// const qs = require('querystring');
-
-// const app = express();
-
-// const oauthConfig = {
-//   tokenUrl: 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/token', // Replace with the correct URL
-//   authorizeUrl: 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/authorize', // Replace with the correct URL
-//   client_id: 'YOUR_CLIENT_ID', // Replace with your client id
-//   client_secret: 'YOUR_CLIENT_SECRET', // Replace with your client secret
-//   grant_type: 'password',
-//   username: 'REDWARE_ABAP',
-//   password: 'Redware@2024'
-// };
-
-// app.get('/queryService', async (req, res) => {
-//   try {
-//     // Get the OAuth2 token
-//     const tokenResponse = await axios.post(oauthConfig.tokenUrl, qs.stringify(oauthConfig), {
-//       headers: {
-//         'Content-Type': 'application/x-www-form-urlencoded'
-//       }
-//     });
-
-//     const accessToken = tokenResponse.data.access_token;
-
-//     // API endpoint of the service you want to query
-//     const apiUrl = 'http://vsapdev.tipler.com.br:8000/sap/opu/odata/sap/ZTESTE_SRV/ZiItemBatchSet';
-
-//     // Make the authenticated API request using axios
-//     const response = await axios.get(apiUrl, {
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//     });
-
-//     // Extract and return the data from the response
-//     const data = response.data;
-//     res.json(data);
-//   } catch (error) {
-//     console.error('Error querying the service:', error);
-//     res.status(500).send('Error querying the service');
-//   }
-// });
-
-// const port = 3003;
-// app.listen(port, () => {
-//   console.log(`Server started on http://localhost:${port}`);
-// });
