@@ -1,0 +1,602 @@
+<html lang="pt">
+
+<head>
+	<link rel="icon" type="image/x-icon"
+		href="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;Login&#x2f;assets&#x2f;favicon.ico">
+	<title>Logon</title>
+	<link rel="stylesheet" type="text/css"
+		href="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw5&#x2f;themes&#x2f;sap_tradeshow_plus&#x2f;ls&#x2f;ls_sf3.css&#x3f;201309262044"
+		t="sap_tradeshow_plus" p="ls" d="">
+	<style type="text/css">
+		#lifestyle {
+			float: left;
+			border: 0;
+			margin: 0;
+			padding: 0;
+		}
+
+		#SLB_contentcell {
+			width: 100%;
+		}
+
+		#SLB_infobox {
+			overflow-x: auto;
+			width: 290px;
+		}
+
+		#boxcontent {
+			margin-left: 335px;
+			/* width of the lifestyle photo + 40 pixels for gutter space */
+			padding: 0;
+		}
+
+		#dynamiccontent {}
+
+		#dynamiccontent #titlegraphic {
+			padding: 0;
+			margin: 0;
+		}
+
+		#dynamiccontent p {
+			margin-top: 0;
+		}
+
+		#copyright {
+			margin-top: 20px;
+			height: 27px;
+			position: relative;
+		}
+
+		#copyright div {
+			font: normal 11px Arial, Helvetica, sans-serif;
+			float: left;
+			position: absolute;
+			bottom: 0;
+			left: 0;
+		}
+
+		#copyright div.corbu {
+			right: 0;
+			left: auto;
+		}
+
+		#copyrighttxt {
+			color: #000;
+		}
+
+		#copyrighttxt-hcb {
+			color: #fff;
+		}
+
+		#copyright img {
+			float: right;
+		}
+
+		#copyright img.corbu {
+			float: left;
+		}
+
+		#container {
+			width: 100%;
+			margin-top: 50px;
+			padding: 0;
+		}
+
+		div[ct="CO"] #container {
+			margin-top: 0;
+			padding-top: 50px;
+		}
+	</style>
+	<script type="text/javascript"
+		src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw7&#x2f;js&#x2f;domainrelax.js&#x3f;7F4CE5C30859"></script>
+	<script type="text/javascript">
+		ur_relax();
+	</script>
+	<script type="text/javascript"
+		src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw7&#x2f;js&#x2f;lightspeed.js&#x3f;7F4CE5C30859"></script>
+</head>
+
+<body tabindex="-1" ti="-1" supportedthemes="sap_corbu" class="urBdyStd urBdyStdNoMrg">
+	<div class="urCanvasBgImage" style="display:none;"></div>
+	<table border="0" cellspacing="0" cellpadding="0" style="width:100%;height:100%;">
+		<tr>
+			<td style="height:100%;">
+				<div id="SL__PAGE" ct="PAGE" lsdata="{}" style="width:100%;height:100%;">
+					<span id="SL__FLOWLAYOUT1" ct="FL" lsdata="{}" class="urFlowLayout"><span class="urLinStd" id="SL__FLOWLAYOUT1_1"><form ct="FOR" id="SL__FORM" name="loginForm" method="POST" action="&#x2f;sap&#x2f;bc&#x2f;webdynpro&#x2f;sap&#x2f;token" style="margin:0px;" lsdata="{0:true}" lsevents="{Submit:[{'ClientAction':'submit','ActionUrl':'','ResponseData':'full','PrepareScript':''},{}]}"><input type="hidden" id="FOCUS_ID" ct="I" lsdata="{2:'sap&#x5c;x2duser'}" name="FOCUS_ID" value="sap-user">
+<input type="hidden" name="sap-system-login-oninputprocessing" value="onProceed">
+<input type="hidden" name="sap-urlscheme" value="">
+<input type="hidden" name="sap-system-login" value="onLogin">
+<input type="hidden" name="sap-system-login-basic_auth" value="">
+<input type="hidden" name="sap-accessibility" value="">
+<input type="hidden" name="sap-login-XSRF" value="FI431TCUGyahkG1aK3LmFoqjEh7i3AUXs74Icf3UcXA&#x3d;">
+<input type="hidden" name="sap-system-login-cookie_disabled" value=""><noscript><iframe style=position:absolute;top:0;left:0;width:100%;height:100% src=?sap-system-login-oninputprocessing=onNoScript></noscript><div id="SL__LAYOUT_CONTAINER" ct="CO" lsdata="{}"><table id="container" style="width:100%"><tr><td style="width:50%">&nbsp;</td><td><table dir="ltr" width="709" border="0" cellpadding="0" cellspacing="0">  <tr>   <td><img src="/sap/public/bc/ur/Login/assets/LogIn_frame_topleft.png" width="29" height="32"></td>   <td background="/sap/public/bc/ur/Login/assets/LogIn_frame_stretch_top.png"></td>   <td><img src="/sap/public/bc/ur/Login/assets/LogIn_frame_topright.png" width="27" height="32"></td>  </tr>  <tr>   <td background="/sap/public/bc/ur/Login/assets/LogIn_frame_stretch_left.png"></td>   <td class="urCellBgPlain" id="SLB_contentcell">   <!-- start login box content -->   <table width="100%" cellspacing="0" cellpadding="0"><tr><td rowspan="2" valign="top" width="290" style="padding-right:40px"><div id="SLB_infobox">     <img src="/sap/public/bc/ur/Login/assets/NetWeaver_Default_Picture.jpg" width="290" height="360">   </div></td><td height="100%" width="100%" dir="ltr">       <div id="titlegraphic"><img src="/sap/public/bc/ur/Login/assets/SAPNetWeaverLoginTitle_wo_Subtitle.jpg" width="325" height="87"></div>       <div id="dynamiccontent"><div id="SL__LAYOUT" ct="SL" lsdata="{}"><div id="SL__LAYOUT_1" class="urLayoutDefault2" style="width:100%;"><table cellspacing="0" cellpadding="0" ct="ML" lsdata="{2:'100&#x5c;x25'}" class="urMatrixLayout" border="0" style="border-collapse:collapse;width:100%;"><tbody class="urLinStd"><tr><td ct="MLC" lsdata="{}" id="" valign="middle" class="urLayoutDefault"><div tabindex="0" ti="0" title="N&#xba;&#x20;mensagem&#x20;ICF_SYSTEM_LOGIN006" class="urMsgBarStdBtm" id="m1" ct="MB" lsdata="{0:'WARNING',2:'N&#x5c;xba&#x5c;x20mensagem&#x5c;x20ICF_SYSTEM_LOGIN006'}"><table cellpadding="0" cellspacing="0" border="0"><tbody><tr><td valign="top" class="urTxtStd"><img alt="" src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw5&#x2f;1x1.gif" id="m1-img" class="urMsgBarImgWarning"></td><td class="urTxtStd urTxtColor"><span id="m1-txt">N&#xe3;o&#x20;foram&#x20;efetuadas&#x20;comuta&#xe7;&#xf5;es&#x20;em&#x20;HTTPS,&#x20;envio&#x20;de&#x20;senha&#x20;n&#xe3;o&#x20;&#xe9;&#x20;certo</span>
+			</td>
+		</tr>
+	</table>
+	</div>
+	</td>
+	</tr>
+	<tr>
+		<td ct="MLC" lsdata="{}" id="" valign="middle" class="urLayoutDefault">
+			<div tabindex="0" ti="0" title="N&#xba;&#x20;mensagem&#x20;ICF_SYSTEM_LOGIN403" class="urMsgBarErrBtm"
+				id="m1" ct="MB" lsdata="{0:'ERROR',2:'N&#x5c;xba&#x5c;x20mensagem&#x5c;x20ICF_SYSTEM_LOGIN403'}">
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tbody>
+						<tr>
+							<td valign="top" class="urTxtStd">
+								<img alt="" src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw5&#x2f;1x1.gif" id="m1-img" class="urMsgBarImgError"></td>
+							<td class="urTxtStd urTxtColor">
+								<span id="m1-txt">A&#x20;verifica&#xe7;&#xe3;o&#x20;do&#x20;cookie&#x20;de&#x20;logon&#x20;falhou.&#x20;Repetir&#x20;o&#x20;logon.</span>
+							</td>
+						</tr>
+				</table>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td ct="MLC" lsdata="{}" id="" valign="middle" class="urLayoutDefault">
+			<div tabindex="0" ti="0" title="N&#xba;&#x20;mensagem&#x20;SWDP_UR_NW7001" class="urMsgBarErrBtm" id="m1"
+				ct="MB" lsdata="{0:'ERROR',2:'N&#x5c;xba&#x5c;x20mensagem&#x5c;x20SWDP_UR_NW7001'}">
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tbody>
+						<tr>
+							<td valign="top" class="urTxtStd">
+								<img alt="" src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw5&#x2f;1x1.gif" id="m1-img" class="urMsgBarImgError"></td>
+							<td class="urTxtStd urTxtColor">
+								<span id="m1-txt">You&#x20;are&#x20;calling&#x20;this&#x20;Web&#x20;site&#x20;with&#x20;a&#x20;browser&#x20;that&#x20;is&#x20;not&#x20;supported</span>
+							</td>
+						</tr>
+				</table>
+			</div>
+		</td>
+	</tr>
+	</table>
+	</div>
+	<div id="SL__LAYOUT_2" class="urLayoutDefault2" style="width:100%;">
+		<div id="SL__DIVIDER1" ct="HD" lsdata="{}" class="urHSpcSml">
+			<img alt="" src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw5&#x2f;1x1.gif" class="urHDImg"></div>
+		</div>
+		<div id="SL__LAYOUT_3" class="urLayoutDefault2" style="width:100%;">
+			<DIV id="SL2" ct="SC" lsdata="{0:'NONE',2:false,3:'LOGON_BUTTON'}" tabindex="0" ti="0">
+				<table title="" cellspacing="0" cellpadding="0" id="g1" class="urFontStd" ct="GL" lsdata="{}"
+					border="0">
+					<tbody>
+						<tr>
+							<td style="height:5px;"></td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class=""
+								style="width:125px;white-space:normal;padding-right:10px;">
+								<label ct="L" lsdata="{1:'sysid',2:'Sistema'}" id="sysid_l" f="sysid" class="urLblVAlign urL" style="white-space:nowrap;">Sistema:</label>
+							</td>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;">
+								<span id="sysid-r" class="urEdf2Whl "><input id="sysid" ct="I" lsdata="{0:'sysid',2:'DE1',3:3,8:true}" type="text" size="3" tabindex="0" ti="0" class="urEdf2TxtRadius urEdf2TxtEnbl urEdf2TxtRo" readonly value="DE1" autocomplete="off" autocorrect="off" name="sysid"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="height:5px;"></td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class=""
+								style="width:125px;white-space:normal;padding-right:10px;">
+								<label ct="L" lsdata="{1:'sap&#x5c;x2dclient',2:'Mandante'}" id="l2" f="sap-client" class="urLblVAlign urLDsbl" style="white-space:nowrap;">Mandante:</label>
+							</td>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;">
+								<span id="sap-client-r" class="urEdf2Whl "><input id="sap-client" ct="I" lsdata="{0:'sap&#x5c;x2dclient',2:'100',3:3,4:3,5:true,7:false}" type="text" size="3" maxlength="3" tabindex="0" ti="0" class="urEdf2TxtRadius urEdf2TxtEnbl urEdf2TxtDsbl" readonly value="100" autocomplete="off" autocorrect="off" name="sap-client"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="height:5px;"></td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class=""
+								style="width:125;white-space:normal;padding-right:10px;">
+								<label ct="L" lsdata="{1:'sap&#x5c;x2duser',2:'Usu&#x5c;xe1rio'}" id="l3" f="sap-user" class="urLblVAlign urLDsbl" style="white-space:nowrap;">Usu&#xe1;rio:</label>
+							</td>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;">
+								<span id="dummy_sap_user-r" class="urEdf2Whl "><input id="dummy_sap_user" ct="I" lsdata="{0:'dummy_sap_user',3:12,4:12,5:true,7:false,8:true,13:'20ex'}" type="text" size="12" maxlength="12" tabindex="0" ti="0" class="urEdf2TxtRadius urEdf2TxtEnbl urEdf2TxtDsbl urEdf2TxtRoInv2" readonly value="" autocomplete="off" autocorrect="off" name="dummy_sap_user" style="width:20ex;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="height:5px;"></td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class=""
+								style="width:125;white-space:normal;padding-right:10px;">
+								<label ct="L" lsdata="{1:'sap&#x5c;x2dpassword',2:'Senha'}" id="l4" f="sap-password" class="urLblVAlign urLDsbl" style="white-space:nowrap;">Senha:</label>
+							</td>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;">
+								<span id="dummy_sap_password-r" class="urEdf2Whl "><input id="dummy_sap_password" ct="I" lsdata="{0:'dummy_sap_password',3:12,4:40,5:true,7:false,8:true,13:'20ex'}" type="text" size="12" maxlength="40" tabindex="0" ti="0" class="urEdf2TxtRadius urEdf2TxtEnbl urEdf2TxtDsbl urEdf2TxtRoInv2" readonly value="" autocomplete="off" autocorrect="off" name="dummy_sap_password" style="width:20ex;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="height:5px;"></td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class=""
+								style="width:125;white-space:normal;padding-right:10px;">
+								<label ct="L" lsdata="{1:'sap&#x5c;x2dlanguage&#x5c;x2ddropdown',2:'Idioma'}" id="l5" f="sap-language-dropdown" class="urLblVAlign urLDsbl" style="white-space:nowrap;">Idioma:</label>
+							</td>
+							<td ct="GLC" lsdata="{}" id="" class="" style="width:20ex;white-space:normal;">
+								<span ct="FL" lsdata="{}" class="urFlowLayout"><span class="urLinStd"><input type="hidden" id="sap-language" ct="I" lsdata="{2:'PT'}" name="sap-language" value="PT"><wbr></wbr></span><span class="urLinStd"><table cellspacing="0" cellpadding="0" id="sap-language-dropdown-r" class="urCoB2WhlTbl"><tr><td><input id="sap-language-dropdown" name="sap-language-dropdown" value="Portugu&#xea;s" readonly ct="CB" lsdata="{0:'sap&#x5c;x2dlanguage&#x5c;x2ddropdown',1:false,7:'SL1',8:'PT',10:'Portugu&#x5c;xeas'}" lsevents="{Select:[{ResponseData:'delta'},{}]}" tabindex="0" ti="0" class="urEdf2TxtRadius urEdf2TxtEnbl lsEdf3TxtDHlpBtn lsEdfLeftBrdRadius urEdf2TxtDsbl" style="width:100%;"></td><td class="lsTblEdf3HlpBtnTd"><input type="text" readonly id="sap-language-dropdown-btn" tabindex="-1" ti="-1" class="urBorderBox lsEdf2HlpRadius lsEdf3DHlpBtnDsbl lsEdf3DHlpBtnR"></input></td></tr></table><wbr></wbr></span><span class="urLinStd"><div id="SL1-r" class="urCob2Ilb" style="height:10px;top:-9999999px;position:absolute;"><div id="SL1" ct="CBSLB" lsdata="{0:5,1:'',4:'VISIBLE'}" class="urCob2Box" style="width:10ex;"><div id="SL1-scrl"><table cellspacing="0" cellpadding="0" width="10px" id="SL1-tab"><tbody><tr id="SL1-key-0" ct="ILBI" lsdata="{}" class="urNoUserSelect"><td class="urIlb2I urColorTxtStandard">&nbsp;</td><td class="urIlb2I urColorTxtStandard">&nbsp;</td><td>&nbsp;</td></tr><tr id="SL1-key-1" ct="ILBI" lsdata="{0:'EN',4:'Ingl&#x5c;xeas',5:'EN'}" class="urNoUserSelect"><td class="urIlb2I urColorTxtStandard">Ingl&#xea;s</td><td class="urIlb2I urColorTxtStandard">EN</td><td>&nbsp;</td></tr><tr id="SL1-key-2" ct="ILBI" lsdata="{0:'PT',4:'Portugu&#x5c;xeas',5:'PT'}" class="urNoUserSelect"><td class="urIlb2I urColorTxtStandard">Portugu&#xea;s</td><td class="urIlb2I urColorTxtStandard">PT</td><td>&nbsp;</td></tr></table></div></div></div><wbr></wbr></span></span>
+							</td>
+						</tr>
+						<tr>
+							<td style="height:5px;"></td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;"></td>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;"><a
+									ondragstart="var&#x20;e&#x3d;window.event&#x3b;e.cancelBubble&#x3d;true&#x3b;e.returnValue&#x3d;false&#x3b;return&#x20;false&#x3b;"
+									id="LOGON_BUTTON" ct="B" lsdata="{0:'Logon',1:'EMPHASIZED',4:false}"
+									lsevents="{Press:[{ResponseData:'delta'},{}]}" tabindex="0" ti="0"
+									class="urNoUserSelect urBtnRadius urBtnEmphDsbl"
+									style="text-align:center;overflow:visible;"><span class="urNoUserSelect urBtnCntDsbl"><span class="urBtnCntTxt">Logon</span></span></a>
+							</td>
+						</tr>
+				</table><span tabindex="0" ti="0" id="SL2-end"></span>
+			</DIV>
+		</div>
+		<div id="SL__LAYOUT_4" class="urLayoutDefault2" style="width:100%;">
+			<div id="SL__DIVIDER2" ct="HD" lsdata="{}" class="urHSpcSml">
+				<img alt="" src="&#x2f;sap&#x2f;public&#x2f;bc&#x2f;ur&#x2f;nw5&#x2f;1x1.gif" class="urHDImg"></div>
+			</div>
+			<div id="SL__LAYOUT_5" class="urLayoutDefault2" style="width:100%;">
+				<table title="" cellspacing="0" cellpadding="0" id="g4" class="urFontStd" ct="GL" lsdata="{}"
+					border="0">
+					<tbody>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;">
+								<table title="" cellspacing="0" cellpadding="0" id="g5" class="urFontStd" ct="GL"
+									lsdata="{}" border="0">
+									<tbody>
+										<tr>
+											<td ct="GLC" lsdata="{}" id="" class=""
+												style="white-space:nowrap;padding-right:10px;"><a
+													class="urLnkDsbl urLnkRepDsbl urTxtStd" id="CHANGE_PASSWORD_LINK"
+													ct="LN" lsdata="{1:'Modificar&#x5c;x20senha',3:false}"
+													lsevents="{Activate:[{ResponseData:'delta'},{}]}" tabindex="0"
+													ti="0" title=""
+													ondragstart="var&#x20;e&#x3d;window.event&#x3b;e.cancelBubble&#x3d;true&#x3b;e.returnValue&#x3d;false&#x3b;return&#x20;false&#x3b;">Modificar&#x20;senha</a>
+											</td>
+										</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td ct="GLC" lsdata="{}" id="" class="" style="white-space:normal;">
+								<table title="" cellspacing="0" cellpadding="0" id="g6" class="urFontStd" ct="GL"
+									lsdata="{}" border="0">
+									<tbody>
+								</table>
+							</td>
+						</tr>
+				</table>
+			</div>
+		</div>
+		<div style="width:100%;margin-top:15px;border-bottom: #93b2d0 1px solid;"></div>
+		<table cellspacing="0" cellpadding="0" border="0" ct="G"
+			lsdata="{0:'120px',1:'System&#x5c;x20Messages',3:'AUTO'}" class="urGrpWhlBox urGrpWhlBrd" role="group"
+			tabindex="0" ti="0" style="width:100%;height:120px;">
+			<tbody>
+				<tr>
+					<td valign="top" class="urGrpBdyBox2" style="height:100%;">
+						<table cellpadding="0" cellspacing="0" border="0"
+							style="table-layout:fixed;width:100%;height:100%;">
+							<tbody>
+								<tr>
+									<td valign="top" style="width:100%;height:100%;">
+										<div id="-scrl" class="urScrl urBorderBox urGrpBdyBoxPd"
+											style="width:100%;height:100%;overflow:auto;">
+											<div style="max-height:1px;">
+												<table title="" cellspacing="0" cellpadding="0" id="SL3"
+													class="urFontStd" ct="GL" lsdata="{}" border="0">
+													<tbody>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL5" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL4" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL7" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL6" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span> <img src="/sap/public/bc/icons/s_M_WARN.gif">&nbsp;&#x20;Sistema&#x20;de&#x20;Desenvolvimento&#x20;EhP7&#x20;para&#x20;SAP&#x20;ERP</span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL9" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL8" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL11" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL10" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span>&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x20;&#x2a;&#x20;&#x20;&#x2a;&#x20;&#x20;&#x2a;&#x20;&#x20;</span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL13" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL12" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL15" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL14" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span> <img src="/sap/public/bc/icons/s_B_BNWK.gif">&nbsp;100&#x20;&#x20;-&#x20;Desenvolvimento&#x20;e&#x20;Customiza&#xe7;&#xe3;o&#x20;-&</span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL17" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL16" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span> <img src="/sap/public/bc/icons/s_B_BNWK.gif">&nbsp;110&#x20;&#x20;-&#x20;SandBox</span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL19" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL18" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span> <img src="/sap/public/bc/icons/s_B_BNWK.gif">&nbsp;130&#x20;&#x20;-&#x20;Testes&#x20;Unit&#xe1;rios&#x20;Desenvolvimento</span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL21" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL20" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL23" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL22" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL25" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL24" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+														<tr>
+															<td ct="GLC" lsdata="{}" id="SL27" class=""
+																style="white-space:normal;">
+																<span class="urFTxtV" id="SL26" ct="FTV" lsdata="{}" tabindex="0" ti="0"><span><code>&nbsp;</code></span></span>
+															</td>
+														</tr>
+												</table>
+											</div>
+										</div>
+									</td>
+								</tr>
+						</table><span tabindex="0" ti="0" tp="END"></span>
+					</td>
+				</tr>
+		</table>
+	</div>
+	</td>
+	</tr>
+	<tr>
+		<td>
+			<div id="copyright">
+				<div id="copyrighttxt">Copyright &copy; 2023 SAP AG. All rights reserved.</div>
+				<img src="/sap/public/bc/ur/Login/assets/sap_logo.png" width="55" height="27"></div>
+			</div>
+		</td>
+	</tr>
+	</table> <!-- end login box content -->
+	</td>
+	<td background="/sap/public/bc/ur/Login/assets/LogIn_frame_stretch_right.png"></td>
+	</tr>
+	<tr>
+		<td><img src="/sap/public/bc/ur/Login/assets/LogIn_frame_bottomleft.png" width="29" height="32"></td>
+		<td align="center" background="/sap/public/bc/ur/Login/assets/LogIn_frame_stretch_bottom.png">
+			<span class="clip"><img src="/sap/public/bc/ur/Login/assets/frame_clip.png" width="298" height="32"></span>
+		</td>
+		<td><img src="/sap/public/bc/ur/Login/assets/LogIn_frame_bottomright.png" width="27" height="32"></td>
+	</tr>
+	</table>
+	</td>
+	<td style="width:50%">&nbsp;</td>
+	</tr>
+	</table><span id="SL__LAYOUT_CONTAINER-TsEnd"></span></div>
+	<div id="ur-loading" ct="LA" lsdata="{}" style="position:absolute;left:0px;top:-5000px;width:150px;display:block;">
+		<div class="urLoadA">
+			<div class="lsLoadImg"></div>
+		</div>
+	</div>
+	</form><wbr></wbr>
+	</span><span class="urLinStd" id="SL__FLOWLAYOUT1_2"><wbr></wbr></span></span>
+	<div id="SL__PAGE-asso"></div>
+	</div>
+	</td>
+	</tr>
+	</table>
+	<span id="UCF_InitializeIDs" style="display:none">["SL__FORM", "SL__PAGE"]</span><span style="display:none" ct="SY" id="UCF_System" lsdata="{0:true,2:'',3:'pt',4:1,8:'&#x5c;x2fsap&#x5c;x2fpublic&#x5c;x2fbc&#x5c;x2fur&#x5c;x2fnw5&#x5c;x2fthemes&#x5c;x2fsap_tradeshow_plus',9:'&#x5c;x2fsap&#x5c;x2fpublic&#x5c;x2fbc&#x5c;x2fur&#x5c;x2fnw5&#x5c;x2fthemes&#x5c;x2fsap_tradeshow_plus&#x5c;x2fls&#x5c;x2fls_sf3.css&#x5c;x3f201309262044',10:'&#x5c;x2fsap&#x5c;x2fpublic&#x5c;x2fbc&#x5c;x2fur&#x5c;x2fnw7',11:'&#x5c;x2fsap&#x5c;x2fpublic&#x5c;x2fbc&#x5c;x2fur&#x5c;x2fnw5&#x5c;x2f1x1.gif',13:false,15:true,16:'',17:'7F4CE5C30859',18:'',22:''}"></span>
+	<script type="text/javascript">
+		function icf_system_cookiesDisabled(){
+var cookie_field = document.getElementsByName("sap-system-login-cookie_disabled")[0];
+var cookie_old = cookie_field.value;
+document.cookie = "Active=true;EXPIRES=Monday, 31-Dec-2024 23:59:59 GMT;";
+if (document.cookie.indexOf("Active=true") >= 0) {
+document.cookie = "Active=true;EXPIRES=Monday, 31-Dec-2024 23:59:59 GMT;";
+cookie_field.value = "";
+}
+else{
+cookie_field.value = "X";
+}
+return cookie_field.value != cookie_old;
+}
+function icf_system_cookieCheck(){
+if (! document.getElementsByName("sap-system-login-basic_auth")[0].value ) {
+if (icf_system_cookiesDisabled())
+document.loginForm.submit();
+}
+}
+function setFocusSafe(name){
+  var el = document.getElementsByName(name)[0];
+  if (!el.disabled) el.focus();
+}
+var wait = 4000;
+function selfSubmit(){
+  sapSL_Submit( "" );
+}
+function checkKey2Login(evt){
+var keyCode = document.layers ? evt.which : document.all ? evt.keyCode : evt.keyCode;
+if(keyCode == 13) 
+callSubmitLogin('onLogin');
+}
+function checkKey2Changepw(evt){
+var keyCode = document.layers ? evt.which : document.all ? evt.keyCode : evt.keyCode;
+if(keyCode == 13) 
+callSubmitChangepw('onDoChangePwd');
+}
+function callSubmitSysmsg(value){
+    document.getElementsByName("sap-system-login-oninputprocessing")[0].value = value;
+    document.systemMessageForm.submit();
+}
+function callSubmitSessionQuery(value){
+    document.getElementsByName("sap-system-login-oninputprocessing")[0].value = value;
+    document.sessionQuery.submit();
+}
+function callSubmitChangepw(value){
+if(value == "onDoDeletePwd"){
+document.getElementsByName("sap-system-login-oninputprocessing")[0].value = value;
+document.changePWForm.submit();
+return;
+}
+document.getElementsByName("sap-system-login-oninputprocessing")[0].value = value;
+var sap_pwd = document.getElementsByName("sap-password")[0];
+if (sap_pwd) sap_pwd.value = document.getElementsByName("sap-system-login-password")[0].value;
+document.changePWForm.submit();
+}
+function callSubmitLogin(value){
+if(document.getElementsByName("sap-user")[0].value.length==0){
+alert("Indicar\x20o\x20usu\xe1rio.");
+document.getElementsByName("sap-user")[0].focus(); return;
+}
+if(document.getElementsByName("sap-password")[0].value.length==0){
+alert("Indicar\x20a\x20senha.");
+document.getElementsByName("sap-password")[0].focus();
+return;
+}
+document.getElementsByName("sap-system-login-oninputprocessing")[0].value=value;
+sapSL_Protect();
+document.loginForm.submit();
+}
+function sapSL_Submit(event) {
+document.getElementsByName("sap-system-login-oninputprocessing")[0].value=event;
+sapSL_Protect();
+document.loginForm.submit();
+return false;
+}
+
+function sapSL_LoginButton_onClick(obj,event) {
+  if (!sapUrMapi_Button_checkClick(obj.id,event)) return true;
+  return sapSL_LoginSubmit();
+}
+
+function sapSL_MessageBoxButton_onClick(obj,event) {
+  if (!sapUrMapi_Button_checkClick(obj.id,event)) return true;
+  return sapSL_Submit("");
+}
+
+function sapSL_Protect() {
+    var inputs = document.getElementsByTagName('INPUT');
+    for ( var i=0; i<inputs.length; i++) {
+        if (inputs[i].getAttribute('ct')=='InputField') {
+            sapUrMapi_InputField_setDisabled( inputs[i].id );
+        }
+    }
+    
+    var buttons = document.getElementsByTagName('A');
+    for ( var i=0; i<buttons.length; i++) {
+        if (buttons[i].getAttribute('ct')=='Button') {
+            sapUrMapi_Button_setDisabled( buttons[i].id );
+        }
+    }
+}
+function SL_SystemLogin() {
+  this.handleEvent = SL_SystemLogin_handleEvent;
+}
+function SL_SystemLogin_handleEvent(semanticEvent) {
+  var eventStr = semanticEvent.mGetParameters().Id + ";" + semanticEvent.sGetName();
+  switch (eventStr) {
+    case "LOGON_BUTTON;Press":
+      callSubmitLogin('onLogin');
+      return false;
+    case "CHANGE_PASSWORD_BUTTON;Press":
+      callSubmitChangepw('onDoChangePwd');
+      return false;
+    case "CANCEL_PASSWORD_BUTTON;Press":
+      callSubmitChangepw('onCancelPwd');
+      return false;
+    case "DEACTIVE_PASSWORD_BUTTON;Press":
+      callSubmitChangepw('onDoDeletePwd');
+      return false;
+    case "MESSAGE_BOX_CONTINUE_BUTTON;Press":
+      sapSL_Submit("");
+      return false;
+    case "SESSION_QUERY_CONTINUE_BUTTON;Press":
+      callSubmitSessionQuery('onSessionQuery');
+      return false;
+    case "SYSTEM_MESSAGE_CONTINUE_BUTTON;Press":
+      callSubmitSysmsg('onContinueSysMsg');
+      return false;
+    case "CHANGE_PASSWORD_LINK;Activate":
+      callSubmitLogin('onChangePwd');
+      return true;
+    case "sap-accessibility-cb;Change":
+      document.getElementById("sap-accessibility").value = semanticEvent.mGetParameters().Checked ? "X" : "";
+      return false;
+    case "sap-certificatecheck-cb;Change":
+      document.getElementById("sap-certificatecheck").value = semanticEvent.mGetParameters().Checked ? "X" : "";
+      return false;
+    case "delete-session-cb;Change":
+      document.getElementById("delete_session").value = semanticEvent.mGetParameters().Checked ? "X" : "";
+      return false;
+    case "sap-language-dropdown;Select":
+      document.getElementById("sap-language").value = semanticEvent.mGetParameters().Key;
+      return false;
+    default:
+  }
+}
+function SL_SystemLogin_destroy() {
+  UCF_ls.destroy();
+}
+function SL_SystemLogin() {
+  this.handleEvent = SL_SystemLogin_handleEvent;
+  UCF_ls = new UCF_LS(document.body);
+  UCF_DomUtil.attachEvent(window, 'unload', SL_SystemLogin_destroy);
+  UCF_ls.setSemanticEventHandler(this,"handleEvent");
+  var focusId = document.getElementById("FOCUS_ID").value;
+  if (focusId) window.UCF_ls.focusElement( focusId );
+}
+function SL_SystemLogin_init() {
+  SL_systemLogin = new SL_SystemLogin();
+}
+window.onload = SL_SystemLogin_init;
+
+function sapSL_Protect() {
+}
+	</script>
+	<div id="SL__PAGE-static"></div>
+	<div style="display:none" id="SL__PAGE-animations"></div>
+	<style media="print" type="text/css">
+		.lsnoprint {
+			display: none
+		}
+
+		.lsprinthighlight {
+			border: none 0px !important;
+			padding: 0 !important;
+			margin: 0 !important
+		}
+
+		.urBdyStd {
+			background-color: #FFF
+		}
+	</style>
+</body>
+
+</html>
