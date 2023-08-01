@@ -76,7 +76,7 @@ app.get('/queryService', passport.authenticate('saml', { session: false }), asyn
         Authorization: `Basic ${authString}`,
       },
     });
-
+//
     // Extract and return the data from the response
     const data = response.data;
     res.json(data);
