@@ -1,50 +1,546 @@
-
 const express = require('express');
-const bodyParser = require('body-parser');
+const passport = require('passport');
+const SamlStrategy = require('passport-saml').Strategy;
 const axios = require('axios');
+
+const primaryCert = `-----BEGIN CERTIFICATE-----
+MIICbzCCAdgCByAVCSMZIQEwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCREUx 
+HDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzARBgNVBAsTClNBUCBXZWIg
+QVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQDExxERTEgU2lzdC5TU0wg
+Y2xpZW50IFN0YW5kYXJkMB4XDTE1MDkyMzE5MjEwMVoXDTM4MDEwMTAwMDAwMVow
+fTELMAkGA1UEBhMCREUxHDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzAR
+BgNVBAsTClNBUCBXZWIgQVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQD
+ExxERTEgU2lzdC5TU0wgY2xpZW50IFN0YW5kYXJkMIGfMA0GCSqGSIb3DQEBAQUA
+A4GNADCBiQKBgQCqXd6BdcEJX9I4SyKlp4+BKKhRPBwaDYp3H5bLXlX4ZlG32Ld6
+vOZvtCawLQdngOLfKdXdKmyL0qtGVexWJvEkzSmw/3avkXBKFNyB6EOuKM5FEPhy
+iDJwFLiNq6LF5Dud06wNjDJfzLsuiv2TZ5zzbfNkOZr6QQVfXr8LkSYXNwIDAQAB
+MA0GCSqGSIb3DQEBBQUAA4GBACKoYL1H2+zJrYZOp5FCDGybYWC9ajkivsDrSPVf
+cXEhp1DM6whTJcup/JgvbAvMdtQajSxTQOxNvmSMDO9iUpXirQQN3wJ/wzTsLFRk
+Bii1qJlza6nlTOipV0RNcxZlVGgXiIY8taBHz5ljbN0iKzQgPgHMvV60DiImuz5Y
+Z7vK
+-----END CERTIFICATE-----`;
+// Your SAML configuration options (issuer, callbackUrl, entryPoint, cert, etc.)
+const samlConfig = {
+  // Replace these values with your actual SAML configuration
+  entryPoint: 'http://localhost/login/callback',
+  callbackUrl: 'http://localhost/saml/callback',
+  issuer: 'passport-saml',
+  cert: primaryCert,
+  // Add other SAML configuration options here if needed
+};
+
+// Create a new SamlStrategy
+const samlStrategy = new SamlStrategy(samlConfig, (profile, done) => {
+  // This function will be called after successful authentication.
+  // You can perform any necessary actions here, e.g., save the user profile to a database.
+  // For now, let's just return the user profile.
+  return done(null, profile);
+});
+
+// Initialize passport and use the SamlStrategy
+passport.use(samlStrategy);
+
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
-app.get('/webhook', (req, res) => {
-  if (req.query['hub.mode'] === 'subscribe' &&
-      req.query['hub.verify_token'] === 'RdwMessage') {
-    console.log('Webhook validated');
-    res.status(200).send(req.query['hub.challenge']);
-  } else {
-    console.error('Failed validation. Make sure the validation tokens match.');
-    res.sendStatus(403);          
-  }  
+// Endpoint to initiate SAML authentication
+app.get('/login', passport.authenticate('saml', { session: false }), (req, res) => {
+  // This route will redirect the user to the AuthnRequest URL for SAML authentication
+  // Once authenticated, the user will be redirected back to the callback URL.
+  // Add any additional logic here if needed.
 });
 
-app.post('/webhook', async (req, res) => {
-  const message = req.body.messages[0];
+// Callback endpoint to handle SAML response
+app.post('/saml/callback', passport.authenticate('saml', { session: false }), (req, res) => {
+  // This route will be called after successful SAML authentication.
+  // You can access the authenticated user's profile in req.user.
+  // Add any additional logic here if needed.
+  res.send('SAML Authentication Successful!'); // You can customize the response message here.
+});
 
-  if (message.fromMe) {
-    // Ignore messages sent by the bot
-    return res.status(200).send('Message received!');
-  }
+// API endpoint to query the service with proper authentication
+app.get('/queryService', passport.authenticate('saml', { session: false }), async (req, res) => {
+  try {
+    // API endpoint of the service you want to query
+    const apiUrl = 'http://vsapdev.tipler.com.br:8000/sap/opu/odata/sap/ZTESTE_SRV/ZiItemBatchSet';
 
-  // Your logic here
-  // For example, if the message body is '1', send a response
-  if (message.body === '1') {
-    const response = await axios.post('https://your-whatsapp-business-api-client-instance/v1/messages', {
-      recipient_type: 'individual',
-      to: message.from,
-      type: 'text',
-      text: {
-        body: 'You selected option 1.',
+    // Replace 'YOUR_USERNAME' and 'YOUR_PASSWORD' with the actual username and password for authentication
+    const username = 'REDWARE_ABAP';
+    const password = 'Redware@2024';
+
+    // Create a base64-encoded string of the username and password for Basic Authentication
+    const authString = Buffer.from(`${username}:${password}`).toString('base64');
+
+    // Make the authenticated API request using axios
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Basic ${authString}`,
       },
     });
+
+    // Extract and return the data from the response
+    const data = response.data;
+    res.json(data);
+  } catch (error) {
+    console.error('Error querying the service:', error);
+    res.status(500).send('Error querying the service');
   }
-
-  res.status(200).send('Message received!');
 });
 
-app.listen(3002, () => {
-  console.log('WhatsApp Bot is listening to port 3002');
+// Start the server
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
 });
+
+// const saml = require('passport-saml');
+// const axios = require('axios');
+
+// const primaryCert = `-----BEGIN CERTIFICATE-----
+// MIICbzCCAdgCByAVCSMZIQEwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCREUx 
+// HDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzARBgNVBAsTClNBUCBXZWIg
+// QVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQDExxERTEgU2lzdC5TU0wg
+// Y2xpZW50IFN0YW5kYXJkMB4XDTE1MDkyMzE5MjEwMVoXDTM4MDEwMTAwMDAwMVow
+// fTELMAkGA1UEBhMCREUxHDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzAR
+// BgNVBAsTClNBUCBXZWIgQVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQD
+// ExxERTEgU2lzdC5TU0wgY2xpZW50IFN0YW5kYXJkMIGfMA0GCSqGSIb3DQEBAQUA
+// A4GNADCBiQKBgQCqXd6BdcEJX9I4SyKlp4+BKKhRPBwaDYp3H5bLXlX4ZlG32Ld6
+// vOZvtCawLQdngOLfKdXdKmyL0qtGVexWJvEkzSmw/3avkXBKFNyB6EOuKM5FEPhy
+// iDJwFLiNq6LF5Dud06wNjDJfzLsuiv2TZ5zzbfNkOZr6QQVfXr8LkSYXNwIDAQAB
+// MA0GCSqGSIb3DQEBBQUAA4GBACKoYL1H2+zJrYZOp5FCDGybYWC9ajkivsDrSPVf
+// cXEhp1DM6whTJcup/JgvbAvMdtQajSxTQOxNvmSMDO9iUpXirQQN3wJ/wzTsLFRk
+// Bii1qJlza6nlTOipV0RNcxZlVGgXiIY8taBHz5ljbN0iKzQgPgHMvV60DiImuz5Y
+// Z7vK
+// -----END CERTIFICATE-----`;
+
+// const samlStrategy = new saml.Strategy({
+//   path: '/login/callback',
+//   entryPoint: 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT',
+//   issuer: 'passport-saml',
+//   cert: primaryCert // Use the primary certificate here
+// },
+// function(profile, done) {
+//   // In this function, you can access the user profile information contained in the SAML assertion.
+//   // You would typically use this to look up the user in your database and create a user session.
+//   // For now, we'll just call done immediately with the user profile.
+//   return done(null, profile);
+// });
+
+// // Use the `samlStrategy.generateServiceProviderMetadata()` function to generate the SP metadata.
+// const serviceProviderMetadata = samlStrategy.generateServiceProviderMetadata();
+
+// console.log('ServiceProviderMetadata:');
+// console.log(serviceProviderMetadata);
+
+// You can use the `serviceProviderMetadata` to configure your SAML identity provider (IdP).
+
+// Once you have configured the IdP and the SAML response is received, you can extract the assertion
+// and use it in your API request as before.
+
+// const saml = require('passport-saml');
+// const axios = require('axios');
+
+// // Replace this with the actual certificate string in PEM format
+// const primaryCert = `-----BEGIN CERTIFICATE-----
+// MIICbzCCAdgCByAVCSMZIQEwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCREUx
+// HDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzARBgNVBAsTClNBUCBXZWIg
+// QVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQDExxERTEgU2lzdC5TU0wg
+// Y2xpZW50IFN0YW5kYXJkMB4XDTE1MDkyMzE5MjEwMVoXDTM4MDEwMTAwMDAwMVow
+// fTELMAkGA1UEBhMCREUxHDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzAR
+// BgNVBAsTClNBUCBXZWIgQVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQD
+// ExxERTEgU2lzdC5TU0wgY2xpZW50IFN0YW5kYXJkMIGfMA0GCSqGSIb3DQEBAQUA
+// A4GNADCBiQKBgQCqXd6BdcEJX9I4SyKlp4+BKKhRPBwaDYp3H5bLXlX4ZlG32Ld6
+// vOZvtCawLQdngOLfKdXdKmyL0qtGVexWJvEkzSmw/3avkXBKFNyB6EOuKM5FEPhy
+// iDJwFLiNq6LF5Dud06wNjDJfzLsuiv2TZ5zzbfNkOZr6QQVfXr8LkSYXNwIDAQAB
+// MA0GCSqGSIb3DQEBBQUAA4GBACKoYL1H2+zJrYZOp5FCDGybYWC9ajkivsDrSPVf
+// cXEhp1DM6whTJcup/JgvbAvMdtQajSxTQOxNvmSMDO9iUpXirQQN3wJ/wzTsLFRk
+// Bii1qJlza6nlTOipV0RNcxZlVGgXiIY8taBHz5ljbN0iKzQgPgHMvV60DiImuz5Y
+// Z7vK
+// -----END CERTIFICATE-----`;
+// const saml = require('passport-saml');
+// const axios = require('axios');
+
+// const primaryCert = `-----BEGIN CERTIFICATE-----
+// MIICbzCCAdgCByAVCSMZIQEwDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCREUx 
+// HDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzARBgNVBAsTClNBUCBXZWIg
+// QVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQDExxERTEgU2lzdC5TU0wg
+// Y2xpZW50IFN0YW5kYXJkMB4XDTE1MDkyMzE5MjEwMVoXDTM4MDEwMTAwMDAwMVow
+// fTELMAkGA1UEBhMCREUxHDAaBgNVBAoTE1NBUCBUcnVzdCBDb21tdW5pdHkxEzAR
+// BgNVBAsTClNBUCBXZWIgQVMxFDASBgNVBAsTC0kwMDIwNzgxMTc1MSUwIwYDVQQD
+// ExxERTEgU2lzdC5TU0wgY2xpZW50IFN0YW5kYXJkMIGfMA0GCSqGSIb3DQEBAQUA
+// A4GNADCBiQKBgQCqXd6BdcEJX9I4SyKlp4+BKKhRPBwaDYp3H5bLXlX4ZlG32Ld6
+// vOZvtCawLQdngOLfKdXdKmyL0qtGVexWJvEkzSmw/3avkXBKFNyB6EOuKM5FEPhy
+// iDJwFLiNq6LF5Dud06wNjDJfzLsuiv2TZ5zzbfNkOZr6QQVfXr8LkSYXNwIDAQAB
+// MA0GCSqGSIb3DQEBBQUAA4GBACKoYL1H2+zJrYZOp5FCDGybYWC9ajkivsDrSPVf
+// cXEhp1DM6whTJcup/JgvbAvMdtQajSxTQOxNvmSMDO9iUpXirQQN3wJ/wzTsLFRk
+// Bii1qJlza6nlTOipV0RNcxZlVGgXiIY8taBHz5ljbN0iKzQgPgHMvV60DiImuz5Y
+// Z7vK
+// -----END CERTIFICATE-----`;
+
+// const samlStrategy = new saml.Strategy({
+//   path: '/login/callback',
+//   entryPoint: 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT',
+//   issuer: 'passport-saml',
+//   cert: primaryCert // Use the primary certificate here
+// },
+// function(profile, done) {
+//   // In this function, you can access the user profile information contained in the SAML assertion.
+//   // You would typically use this to look up the user in your database and create a user session.
+//   // For now, we'll just call done immediately with the user profile.
+//   return done(null, profile);
+// });
+
+// const samlRequestUrl = samlStrategy.getAuthorizeUrl();
+// console.log('SAML Request URL:', samlRequestUrl);
+
+// Use the samlRequestUrl to initiate the SAML request with your IdP
+// Once the SAML response is received, you can proceed with your API request
+// with the assertion obtained from the SAML response.
+// The specific implementation of the SAML request handling will depend on your IdP.
+
+// Once you receive the SAML response and extract the assertion,
+// you can use it in the API request as before.
+
+
+
+
+// const axios = require('axios');
+// const https = require('https');
+// const qs = require('qs');
+
+// const agent = new https.Agent({  
+//   rejectUnauthorized: false
+// });
+
+// const username = 'REDWARE_ABAP';
+// const password = 'Redware@2024';
+
+// axios({
+//   method: 'post',
+//   url: 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT',
+//   headers: {
+//     'Authorization': 'Basic ' + Buffer.from(username + ':' + password).toString('base64'),
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   },
+//   httpsAgent: agent,
+//   data: qs.stringify({
+//     grant_type: 'password',
+//     username: username,
+//     password: password
+//   })
+// })
+// .then(response => {
+//   console.log(response.data);
+// })
+// .catch(error => {
+//   console.error(error);
+// });
+
+
+
+/////////////////////////////////////////// grrrrr
+
+// const axios = require('axios');
+// const https = require('https');
+
+// const agent = new https.Agent({  
+//   rejectUnauthorized: false
+// });
+
+// axios.post('https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT', {
+//   grant_type: 'password',
+//   username: 'REDWARE_ABAP',
+//   password: 'Redware@2024'
+// }, { 
+//   httpsAgent: agent,
+// })
+// .then(response => {
+//   console.log(response.data);
+// })
+// .catch(error => {
+//   console.error(error);
+// });
+ 
+// const axios = require('axios');
+// const https = require('https');
+
+// const agent = new https.Agent({  
+//   rejectUnauthorized: false
+// });
+
+// axios.post('https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT', {}, { 
+//   httpsAgent: agent,
+//   auth: { 
+//     username: 'REDWARE_ABAP',
+//     password: 'Redware@2024'
+//   }
+// })
+// .then(response => {
+//   console.log(response.data);
+// })
+// .catch(error => {
+//   console.error(error);
+// });
+
+
+// const axios = require('axios');
+// const qs = require('qs');
+
+// async function getAccessToken() {
+//   // const tokenUrl = 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/token'; // Replace with your token endpoint
+//   const tokenUrl = 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100&sap-language=PT'; // Replace with your token endpoint
+//   const clientId = 'ODATA_RED'; // Replace with your client ID
+//   const username = 'REDWARE_ABAP'; // Replace with the resource owner's username
+//   const password = 'Redware@2024'; // Replace with the resource owner's password
+
+//   const data = qs.stringify({
+//     grant_type: 'password',
+//     username: username,
+//     password: password,
+//     client_id: clientId
+//   });
+
+//   const headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   };
+
+//   try {
+//     const response = await axios.post(tokenUrl, data, { headers });
+//     console.log(response.data.access_token); // Moved this line inside the try block
+//     return response.data.access_token;
+//   } catch (error) {
+//     console.error('Error obtaining access token', error);
+//     return null;
+//   }
+// }
+
+// getAccessToken();
+
+
+// const axios = require('axios');
+// const qs = require('qs');
+// const express = require('express');
+// const app = express();
+
+// const clientId = 'ODATA_RED';
+// const clientSecret = ''; // If you don't have a client secret, just leave it as an empty string
+// const authorizationEndpoint = 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/authorize';
+// const tokenEndpoint = 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/token';
+// const redirectUri = 'http://localhost:3000/callback'; // Replace with your redirect URI
+
+// app.get('/authorize', (req, res) => {
+//   res.redirect(`${authorizationEndpoint}?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`);
+// });
+
+// app.get('/callback', async (req, res) => {
+//   const code = req.query.code;
+
+//   const data = qs.stringify({
+//     grant_type: 'authorization_code',
+//     client_id: clientId,
+//     client_secret: clientSecret,
+//     redirect_uri: redirectUri,
+//     code: code
+//   });
+
+//   const headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   };
+
+//   try {
+//     const response = await axios.post(tokenEndpoint, data, { headers });
+//     console.log(response.data.access_token);
+//     res.send('Access token obtained: ' + response.data.access_token);
+//   } catch (error) {
+//     console.error('Error obtaining access token', error);
+//     res.status(500).send('Error obtaining access token');
+//   }
+// });
+
+// app.listen(3000, () => {
+//   console.log('App listening on port 3000');
+// });
+
+
+
+// const axios = require('axios');
+// const qs = require('qs');
+
+// async function getAccessToken() {
+//   const tokenUrl = 'http://vsapdev.tipler.com.br:8000/sap/bc/sec/oauth2/token'; // Replace with your token endpoint
+//   const clientId = 'REDWARE_ABAP'; // Replace with your client ID
+//   const clientSecret = 'Redware@2024'; // Replace with your client secret
+//   // const authorizationGrant = 'your-authorization-grant'; // Replace with your authorization grant
+
+//   const auth = {
+//     username: clientId,
+//     password: clientSecret
+//   };
+
+//   const data = qs.stringify({
+//     grant_type: 'authorization_code', // Or 'client_credentials' or other grant type depending on your OAuth 2.0 flow
+//     code: authorizationGrant // Not needed for 'client_credentials' grant type
+//   });
+
+//   const headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   };
+
+//   try {
+//     const response = await axios.post(tokenUrl, data, { auth, headers });
+//     return response.data.access_token;
+//   } catch (error) {
+//     console.error('Error obtaining access token', error);
+//     return null;
+//   }
+// }
+
+// // Add this at the top of your file
+// const qs = require('qs');
+
+// // Add this function to your code
+// async function getAccessToken() {
+//   const tokenUrl = 'https://your-sap-service.com/oauth/token'; // Replace with your token endpoint
+//   const clientId = 'REDWARE_ABAP'; // Replace with your client ID
+//   const clientSecret = 'Redware@2024'; // Replace with your client secret
+
+//   const auth = {
+//     username: clientId,
+//     password: clientSecret
+//   };
+
+//   const data = qs.stringify({
+//     grant_type: 'client_credentials'
+//   });
+
+//   const headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   };
+
+//   try {
+//     const response = await axios.post(tokenUrl, data, { auth, headers });
+//     return response.data.access_token;
+//   } catch (error) {
+//     console.error('Error obtaining access token', error);
+//     return null;
+//   }
+// }
+
+// // Then, in your webhook POST handler, you can use this function to get an access token
+// app.post('/webhook', async (req, res) => {
+//   // ... existing code ...
+
+//   // Get an access token
+//   const accessToken = await getAccessToken();
+
+//   // Use the access token in your API requests
+//   // For example:
+//   const response = await axios.post('https://bot.redware.io/message', {
+//     recipient_type: 'individual',
+//     to: message.from,
+//     type: 'text',
+//     text: {
+//       body: 'You selected option 1.',
+//     },
+//   }, {
+//     headers: {
+//       'Authorization': `Bearer ${accessToken}`
+//     }
+//   });
+
+//   // ... existing code ...
+// });
+
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const axios = require('axios');
+// const passport = require('passport');
+// const SamlStrategy = require('passport-saml').Strategy;
+
+// const app = express();
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+// app.use(passport.initialize());
+
+// passport.use(new SamlStrategy(
+//   {
+//     path: '/login/callback',
+//     entryPoint: 'https://your-idp.com/entry-point',
+//     issuer: 'issuer',
+//     // Certificado e chave privada para assinatura
+//     // cert: fs.readFileSync('./cert.pem', 'utf-8'),
+//     // privateCert: fs.readFileSync('./key.pem', 'utf-8'),
+//   },
+//   function(profile, done) {
+//     // Aqui você pode verificar o perfil SAML e decidir se o usuário está autenticado ou não
+//     return done(null, profile);
+//   })
+// );
+
+// app.post('/login/callback',
+//   passport.authenticate('saml', { failureRedirect: '/', failureFlash: true }),
+//   function(req, res) {
+//     res.redirect('/');
+//   }
+// );
+
+// // O restante do seu código vai aqui
+
+// app.listen(3002, () => {
+//   console.log('WhatsApp Bot is listening to port 3002');
+// });
+
+
+// const express = require('express');
+// const bodyParser = require('body-parser');
+// const axios = require('axios');
+// const app = express();
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
+
+// app.get('/webhook', (req, res) => {
+//   if (req.query['hub.mode'] === 'subscribe' &&
+//       req.query['hub.verify_token'] === 'RdwMessage') {
+//     console.log('Webhook validated');
+//     res.status(200).send(req.query['hub.challenge']);
+//   } else {
+//     console.error('Failed validation. Make sure the validation tokens match.');
+//     res.sendStatus(403);          
+//   }  
+// });
+
+// app.post('/webhook', async (req, res) => {
+
+//   if (req.body){
+
+//   const message = req.body.messages[0];
+
+//   if (message.fromMe) {
+//     // Ignore messages sent by the bot
+//     return res.status(200).send('Message received!');
+//   }
+
+//   // Your logic here
+//   // For example, if the message body is '1', send a response
+//   if (message.body === '1') {
+//     const response = await axios.post('https://bot.redware.io/message', {
+//       recipient_type: 'individual',
+//       to: message.from,
+//       type: 'text',
+//       text: {
+//         body: 'You selected option 1.',
+//       },
+//     });
+//   }
+// }
+
+//   res.status(200).send('Message received!');
+// });
+
+// app.listen(3002, () => {
+//   console.log('WhatsApp Bot is listening to port 3002');
+// });
 
 
 // webhook meta
