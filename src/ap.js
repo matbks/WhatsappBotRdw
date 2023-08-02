@@ -26,7 +26,7 @@ passport.use(oauth2Strategy);
 
 app.get('/auth/callback', function(req, res) {
   const { code } = req.query;
-
+  console.log(code)
   const options = {
     url: 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100',
     form: {
