@@ -10,7 +10,7 @@ const oauth2Strategy = new OAuth2Strategy({
   clientID: 'ODATA_RED', // Replace with your client ID
   // clientSecret: 'YOUR_CLIENT_SECRET', // Replace with your client secret
   scope: 'ZTESTE_SRV_0001',
-  callbackURL: 'http://localhost:3002/auth/callback',
+  callbackURL: 'https://bot.redware.io/auth/callback',
   state: true
 },
 function(accessToken, refreshToken, profile, cb) {
