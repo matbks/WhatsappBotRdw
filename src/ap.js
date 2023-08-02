@@ -10,7 +10,7 @@ const oauth2Strategy = new OAuth2Strategy({
   clientID: 'ODATA_RED', // Replace with your client ID
   // clientSecret: 'YOUR_CLIENT_SECRET', // Replace with your client secret
   scope: 'ZTESTE_SRV_0001',
-  callbackURL: 'http://localhost:3000/auth/callback'
+  callbackURL: 'http://localhost:3002/auth/callback'
 },
 function(accessToken, refreshToken, profile, cb) {
   console.log(profile);
@@ -38,8 +38,8 @@ app.get('/auth',
 
 // Initialize the Passport middleware and start the server
 app.use(passport.initialize());
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
+app.listen(3002, () => {
+  console.log('Server started on port 3002');
 });
 
 // const express = require('express');
