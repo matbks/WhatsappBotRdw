@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2');
 const session = require('express-session');
-const request = require('request'); // Add this line
+const axios = require('axios'); // Use axios instead of request
 const app = express();
 
 app.use(session({ secret: 'your secret here', resave: false, saveUninitialized: false }));
@@ -26,28 +26,26 @@ passport.use(oauth2Strategy);
 
 app.get('/auth/callback', function(req, res) {
   const code = req.query.code;
-  const options = {
-    url: 'https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100',
-    form: {
-      grant_type: 'authorization_code',
-      code: code,
-      redirect_uri: 'https://bot.redware.io/auth/callback',
-      client_id: 'ODATA_RED'
-    },
-    headers: {
-      'Authorization': 'Basic ' + Buffer.from('ODATA_RED:12345678').toString('base64')
-    }
+  const auth = 'Basic ' + Buffer.from('ODATA_RED:12345678').toString('base64');
+  const data = {
+    grant_type: 'authorization_code',
+    code: code,
+    redirect_uri: 'https://bot.redware.io/auth/callback',
+    client_id: 'ODATA_RED'
   };
 
-  request.post(options, function(error, response, body) {
-    if (!error && response.statusCode == 200) {
-      const info = JSON.parse(body);
-      console.log('Access Token:', info.access_token);
-      res.send('OAuth2 authentication successful! Access token: ' + info.access_token);
-    } else {
-      console.log('Error occurred while exchanging code for token.');
-      res.send('Error occurred while exchanging code for token.');
+  axios.post('https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/token?sap-client=100', data, {
+    headers: {
+      'Authorization': auth
     }
+  })
+  .then(response => {
+    console.log('Access Token:', response.data.access_token);
+    res.send('OAuth2 authentication successful! Access token: ' + response.data.access_token);
+  })
+  .catch(error => {
+    console.log('Error occurred while exchanging code for token:', error.message);
+    res.send('Error occurred while exchanging code for token. Check the console for more details.');
   });
 });
 
