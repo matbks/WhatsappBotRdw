@@ -13,7 +13,7 @@ app.get('/auth/callback', (req, res) => {
   // If the state values match, the request was made by your app
   // If not, the request could be a CSRF attack, do not process it
   // if (state === 'YOUR_STATE_VALUE') {
-  if (state = 1599) {
+  if (state == 1599) {
     // The access token is available in the access_token query parameter
     // You can now use this access token to make authenticated requests to the resource server
     res.send(`OAuth2 authentication successful! Access token: ${accessToken}`);
