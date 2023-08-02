@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 app.get('/auth', (req, res) => {
-  const authURL = `https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/authorize?sap-client=100&response_type=token&client_id=ODATA_RED&redirect_uri=https://bot.redware.io/auth/callback&scope=ZTESTE_SRV_0001&state=1599`;
+  const authURL = `https://vsapdev.tipler.com.br:8043/sap/bc/sec/oauth2/authorize?sap-client=100&response_type=code&client_id=ODATA_RED&redirect_uri=https://bot.redware.io/auth/callback&scope=ZTESTE_SRV_0001&state=1599`;
   res.redirect(authURL);
 });
 
